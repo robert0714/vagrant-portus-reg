@@ -1,0 +1,21 @@
+# Variable setup.
+- name: Include OS-Specific variables
+  include_vars: "{{ ansible_os_family }}.yml"
+  tags:  [portus]
+
+- name: Define host_ip
+  set_fact:
+    host_ip: "{{ __host_ip }}"
+  when: host_ip is not defined
+  tags:  [portus]
+
+- name:  checkout v2.2 git@github.com/SUSE/Portus.git
+  shell: git clone -b v2.2 https://github.com/SUSE/Portus.git
+  ignore_errors: yes
+  tags:  [portus]
+
+ 
+- name:  compose setup
+  shell: "./compose-setup.sh -e {{ __host_ip }}  "
+  ignore_errors: yes
+  tags:  [portus]
